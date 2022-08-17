@@ -1,0 +1,122 @@
+/* 放置一些公共的样式. 比如导航栏 */
+
+/* 清除浏览器默认样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 给整体页面设置一个高度, 让页面和浏览器窗口一样高 */
+html, body {
+    /* 设置页面高度和浏览器窗口一样高 */
+    height: 100%;
+
+    /* 设置一个背景图片 */
+    background-image: url(../image/background.jpg);
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+/* 给导航栏设置样式 */
+.nav {
+    width: 100%;
+    height: 50px;
+    background-color: rgba(51, 51, 51, 0.4);
+    color: white;
+    /* 让导航里的内容垂直居中 */
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+/* 给 logo 设置样式 */
+.nav img {
+    /* 给图片设置尺寸 */
+    width: 40px;
+    height: 40px;
+    /* 把图片变圆 */
+    border-radius: 50%;
+    /* 让图片距离左侧有点空隙 */
+    margin-left: 30px;
+    /* 让图片距离右侧的标题也有点空隙 */
+    margin-right: 10px;
+}
+
+.nav .spacer {
+    width: 70%;
+}
+
+.nav a {
+    color: #fff;
+    text-decoration: none;
+    padding: 0 10px;
+}
+
+/* 版心的样式. 这个内容也是要多个页面引用 */
+.container {
+    /* 设置宽度 */
+    width: 1000px;
+    /* 设置高度 */
+    height: calc(100% - 50px);
+    /* 设置水平居中 */
+    margin: 0 auto;
+    /* 设置弹性布局 */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.container .left {
+    height: 100%;
+    width: 200px;
+}
+
+.container .right {
+    height: 100%;
+    /* 让右侧留出 5px 的空隙! */
+    width: 795px;
+    /* 加上背景色, 防止博客内容看不清 */
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+
+    /* 如果内容溢出, 就加上滚动条 */
+    overflow: auto;
+}
+
+/* 展示用户信息的卡片 */
+.card {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    /* 设置一下内边距 */
+    padding: 30px;
+}
+
+/* 用户头像 */
+.card img {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+}
+
+/* 用户名 */
+.card h3 {
+    text-align: center;
+    padding: 10px;
+}
+
+/* github 链接 */
+.card a {
+    display: block;
+    text-align: center;
+    color: #888;
+    text-decoration: none;
+    padding: 10px;
+}
+
+.card .counter {
+    display: flex;
+    justify-content: space-around;
+    padding: 5px;
+}

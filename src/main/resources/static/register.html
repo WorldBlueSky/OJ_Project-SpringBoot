@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+<!-- 导航栏 -->
+<div class="nav">
+    <!-- logo -->
+    <img src="image/background.jpg" alt="">
+    <!-- 标题 -->
+    <span class="title">我的博客系统</span>
+    <!-- 空白的占位符 -->
+    <span class="spacer"></span>
+    <!-- 右侧的几个链接 -->
+    <a href="blog_list.html">主页</a>
+    <a href="blog_edit.html">写博客</a>
+    <a href="logout" style="display: none;">注销</a>
+</div>
+
+<!-- 登录页面的页面容器, 为了和其他页面样式区分开, 使用不同的类名 -->
+<div class="login-container">
+    <div class="login-dialog">
+        <form action="reigser" method="POST">
+            <!-- 标题 -->
+            <h3>登录</h3>
+            <!-- 输入用户名 -->
+            <div class="row">
+                <span>用户名</span>
+                <input type="text" id="username" name="username">
+            </div>
+            <!-- 输入密码 -->
+            <div class="row">
+                <span>密码</span>
+                <input type="password" id="password" name="password">
+
+            </div>
+
+            <div class="row">
+                <span>确认密码</span>
+                <input type="password" id="required" name="password">
+            </div>
+
+
+            <!-- 提交按钮 -->
+            <div class="row submit-row">
+                <!-- <button id="submit">提 交</button> -->
+                <input id="submit" type="submit" value="注 册" onclick=register()>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+
+    function register() {
+        // 1、先确认输入密码是否一致
+            need();
+
+        // 2、发送ajax请求，完成注册用户
+        $.ajax({
+            url: '',
+            type:'',
+            success:'',
+        })
+
+    }
+
+
+    function need(){
+        // 1、确认密码得和输入的密码一致，在前台进行比对
+        let password = document.querySelector("#password");
+
+        let required = document.querySelector("#required");
+
+        if(password.value!== required.value){
+            alert("输入密码不一致，请重新确认密码!");
+        }
+    }
+
+
+</script>
+
+
+</body>
+</html>
