@@ -12,28 +12,26 @@
 <!-- 导航栏 -->
 <div class="nav">
     <!-- logo -->
-    <img src="image/background.jpg" alt="">
+    <img src="img/background.jpg" alt="">
     <!-- 标题 -->
     <span class="title">我的博客系统</span>
     <!-- 空白的占位符 -->
     <span class="spacer"></span>
     <!-- 右侧的几个链接 -->
-    <a href="blog_list.html">主页</a>
-    <a href="blog_edit.html">写博客</a>
-    <a href="logout" style="display: none;">注销</a>
 </div>
 
 <!-- 登录页面的页面容器, 为了和其他页面样式区分开, 使用不同的类名 -->
 <div class="login-container">
     <div class="login-dialog">
-        <form action="reigser" method="POST">
             <!-- 标题 -->
-            <h3>登录</h3>
+            <h3>注 册</h3>
+
             <!-- 输入用户名 -->
             <div class="row">
                 <span>用户名</span>
                 <input type="text" id="username" name="username">
             </div>
+
             <!-- 输入密码 -->
             <div class="row">
                 <span>密码</span>
@@ -49,39 +47,45 @@
 
             <!-- 提交按钮 -->
             <div class="row submit-row">
-                <!-- <button id="submit">提 交</button> -->
-                <input id="submit" type="submit" value="注 册" onclick=register()>
+                <input id="submit" type="submit" onclick=register() value="注册">
             </div>
-        </form>
+
+
+
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script>
 
-    function register() {
-        // 1、先确认输入密码是否一致
-            need();
+    function register() { // 用户名、密码、确认密码 进行注册信息
+        //1、获取到注册的控件信息
+        let username = document.querySelector("#username");
+        let password =document.querySelector("#password")
+        let required = document.querySelector("#required");
 
         // 2、发送ajax请求，完成注册用户
         $.ajax({
-            url: '',
-            type:'',
-            success:'',
+            url: "oj/reg"+"?username="+username.value+"&password="+password.value+"&required="+required.value,
+            method:'GET',
+            success:function (data,status) {
+                if(data.status===1001){// 这是用户名或者密码为空，提示
+                    alert(data.message);
+                }else if(data.status===1002){ // 两次密码不一致，请重新输入
+                    alert(data.message)
+                }else if(data.status===1003){// 注册成功，跳转到登陆界面
+                    alert(data.message);
+                    location.href="login.html";
+                }else if(data.status===2002){ // 注册时服务器异常
+                    alert(data.message)
+                }else if(data.status===2004){ // 注册时用户名已经被占用
+                    alert(data.message)
+                }
+            }
         })
 
     }
 
-
-    function need(){
-        // 1、确认密码得和输入的密码一致，在前台进行比对
-        let password = document.querySelector("#password");
-
-        let required = document.querySelector("#required");
-
-        if(password.value!== required.value){
-            alert("输入密码不一致，请重新确认密码!");
-        }
-    }
 
 
 </script>

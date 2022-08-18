@@ -12,21 +12,18 @@
 <!-- 导航栏 -->
 <div class="nav">
     <!-- logo -->
-    <img src="image/logo2.jpg" alt="">
+    <img src="img/logo2.jpg" alt="">
     <!-- 标题 -->
     <span class="title">我的博客系统</span>
     <!-- 空白的占位符 -->
     <span class="spacer"></span>
     <!-- 右侧的几个链接 -->
-    <a href="blog_list.html">主页</a>
-    <a href="blog_edit.html">写博客</a>
     <a href="logout" style="display: none;">注销</a>
 </div>
 
 <!-- 登录页面的页面容器, 为了和其他页面样式区分开, 使用不同的类名 -->
 <div class="login-container">
     <div class="login-dialog">
-        <form action="login" method="POST">
             <!-- 标题 -->
             <h3>登录</h3>
             <!-- 输入用户名 -->
@@ -42,60 +39,96 @@
 
             <div class="row submit-row">
                 <!-- <button id="submit">提 交</button> -->
-                <button id="getcode" onclick=getVarCode()>点击获取验证码</button>
+                <button id="getcode" onclick=getVarCode() >点击获取验证码</button>
             </div>
 
             <!-- 提交按钮 -->
             <div class="row submit-row">
                 <!-- <button id="submit">提 交</button> -->
-                <input id="submit" type="submit" value="登 陆">
+                <input id="submit" type="submit" value="登 陆" onclick=login()>
             </div>
-        </form>
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 
 <script type="text/javascript">
 
-    function getVarCode() {
+    function login() {// 手机号 + 验证码 登陆
+        let phoneNumber = document.querySelector("#phoneNumber");
+        let code = document.querySelector("#code");
+        $.ajax({
+            url:"oj/phoneLogin"+"?phone="+phoneNumber.value+"&code="+code.value,
+            type:"POST",
+            success:function (data,status) {
+                if(data.status===4005){//输入为空
+                    alert(data.message);
+                }else if(data.status===4006){// 格式非法。长度不对
+                    alert(data.message);
+                }else if(data.status===4007){//查询不到验证码
+                    alert(data.message);
+                }else if(data.status===4008){//查到验证码，比对失败
+                    alert(data.message);
+                }else if(data.status===4009){//比对成功，登陆主页
+                    alert(data.message);
+                    location.href="index.html";
+                }
+            }
+        })
+    }
+
+    function getVarCode() { // 发送验证码，同时验证码按钮禁用
 
         //1、获取输入框中的手机号
         let phoneNumber = document.querySelector("#phoneNumber")
 
-        // $.ajax({
-        //     url:''+"?phone="+phoneNumber.value,
-        //     type:'POST',
-        //     success(data,status){
-        //         function f() {
-        //
-        //         }
-        //     }
-        // })
-
-        //将按钮禁用
-        let btn = document.querySelector("#getcode");
-        btn.disabled = true;
-        btn.style.cursor = "not-allowed"; //鼠标显示禁用图标
-
-        //按钮显示60秒倒计时
-        let second = 60;
-        let counter = setInterval(function () {
-            second--;
-            if (second > 0) {
-                btn.innerText = second + "秒后重新获取";
+        $.ajax({
+            url:'oj/phoneSend'+"?phone="+phoneNumber.value,
+            type:'POST',
+            success(data,status){
+                if(data.status===4000){//输入为空
+                    alert(data.message);
+                }else if(data.status===4001){// 格式非法。长度不对
+                    alert(data.message);
+                }else if(data.status===4002){//验证码还未过期，发送失败!
+                    alert(data.message);
+                }else if(data.status===4003){//验证码发送成功，请及时填写，2分钟有效
+                    f();// 只有在真正发送成功的时候，按钮才会禁用
+                    alert(data.message);
+                }else if(data.status===4009){//验证码发送失败
+                    alert(data.message);
+                }
             }
-        }, 1000);
+        })
 
-        //60秒时间间隔到了之后清除倒计时，按钮恢复点击功能
-        setTimeout(function () {
-            //清除倒计时定时器
-            clearInterval(counter);
-            //按钮恢复
-            btn.innerHTML = "获取验证码";
-            btn.disabled = false;
-            btn.style.cursor = "";
-        }, 30000);
+        function f() {
+            //将按钮禁用
+            let btn = document.querySelector("#getcode");
+            btn.disabled = true;
+            btn.style.cursor = "not-allowed"; //鼠标显示禁用图标
+
+            //按钮显示60秒倒计时
+            let second = 120;
+            let counter = setInterval(function () {
+                second--;
+                if (second > 0) {
+                    btn.innerText = second + "秒后重新获取";
+                }
+            }, 1000);
+
+            //60秒时间间隔到了之后清除倒计时，按钮恢复点击功能
+            setTimeout(function () {
+                //清除倒计时定时器
+                clearInterval(counter);
+                //按钮恢复
+                btn.innerHTML = "获取验证码";
+                btn.disabled = false;
+                btn.style.cursor = "";
+            }, 30000);
+        }
+
     }
+
 
 
 </script>

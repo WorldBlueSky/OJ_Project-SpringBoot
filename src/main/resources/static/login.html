@@ -12,21 +12,19 @@
 <!-- 导航栏 -->
 <div class="nav">
     <!-- logo -->
-    <img src="image/background.jpg" alt="">
+    <img src="img/background.jpg" alt="">
     <!-- 标题 -->
     <span class="title">我的博客系统</span>
     <!-- 空白的占位符 -->
     <span class="spacer"></span>
     <!-- 右侧的几个链接 -->
-    <a href="blog_list.html">主页</a>
-    <a href="blog_edit.html">写博客</a>
     <a href="logout" style="display: none;">注销</a>
 </div>
 
 <!-- 登录页面的页面容器, 为了和其他页面样式区分开, 使用不同的类名 -->
 <div class="login-container">
     <div class="login-dialog">
-        <form action="login" method="POST">
+
             <!-- 标题 -->
             <h3>登录</h3>
             <!-- 输入用户名 -->
@@ -43,19 +41,55 @@
 
             <div class="phone">
                 <br>
-                <a href="" target="_blank" class="a1">手机号验证码登陆</a>
+                <a href="phoneLogin.html" target="_blank" class="a1">手机号验证码登陆</a>
                 <br>
-                <a href="" target="_blank" class="a1">注册账号</a>
+                <a href="register.html" target="_blank" class="a1">注册账号</a>
             </div>
 
 
             <!-- 提交按钮 -->
             <div class="row submit-row">
                 <!-- <button id="submit">提 交</button> -->
-                <input id="submit" type="submit" value="登 陆">
+                <input id="submit" type="submit" onclick=log() value="登陆">
             </div>
-        </form>
+
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script>
+
+
+    function log() {
+        //1、获取用户名和密码的值
+         let username = document.querySelector("#username");
+         let password = document.querySelector("#password");
+         // console.log(username.value);
+         // console.log(password.value);
+
+        //2、发送ajax请求
+        $.ajax({
+            url:"oj/login"+"?username="+username.value+"&password="+password.value,
+            type:"POST",
+            success:function (data,status) {
+                if(data.status===3001){// 密码与用户名不匹配
+                    alert(data.message);
+                }else if(data.status===3002){// 用户名不存在
+                    alert(data.message);
+                }else if(data.status===3003){// 用户名或密码不能为空！
+                    alert(data.message);
+                }else if(data.status===3004){// 登陆成功，跳转主页
+                    alert(data.message);
+                    location.href="index.html";
+                }
+            }
+        })
+
+    }
+</script>
+
 </body>
+
+
+
 </html>

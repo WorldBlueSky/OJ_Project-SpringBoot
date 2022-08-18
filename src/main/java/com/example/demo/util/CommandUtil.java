@@ -8,9 +8,6 @@ public class CommandUtil {
 
     // 创建子进程，执行指定命令
 
-
-
-
    public static int run(String cmd,String stdoutFile,String stderrFile){
        try {
            //1、通过Runtime类，执行exec

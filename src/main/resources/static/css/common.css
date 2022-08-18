@@ -13,7 +13,7 @@ html, body {
     height: 100%;
 
     /* 设置一个背景图片 */
-    background-image: url(../image/background.jpg);
+    background-image: url(../img/background.jpg);
     background-position: center center;
     background-size: cover;
     background-repeat: no-repeat;
