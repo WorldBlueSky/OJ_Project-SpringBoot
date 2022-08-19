@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>登录</title>
+    <title>注册</title>
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/login.css">
 </head>
@@ -12,12 +12,14 @@
 <!-- 导航栏 -->
 <div class="nav">
     <!-- logo -->
-    <img src="img/background.jpg" alt="">
+    <img src="img/cat.jpg" alt="">
     <!-- 标题 -->
-    <span class="title">我的博客系统</span>
+    <span class="title">Java 在线OJ 系统</span>
     <!-- 空白的占位符 -->
     <span class="spacer"></span>
     <!-- 右侧的几个链接 -->
+    <a class="navbar-brand font-weight-bold" href="index.html">主页</a>
+    <a class="navbar-brand font-weight-bold" href="javascript:void(0);"  onclick=logout()>注销</a>
 </div>
 
 <!-- 登录页面的页面容器, 为了和其他页面样式区分开, 使用不同的类名 -->
@@ -69,21 +71,26 @@
             url: "oj/reg"+"?username="+username.value+"&password="+password.value+"&required="+required.value,
             method:'GET',
             success:function (data,status) {
-                if(data.status===1001){// 这是用户名或者密码为空，提示
-                    alert(data.message);
-                }else if(data.status===1002){ // 两次密码不一致，请重新输入
-                    alert(data.message)
-                }else if(data.status===1003){// 注册成功，跳转到登陆界面
-                    alert(data.message);
+                alert(data.message);
+                if(data.state===1003){// 注册成功，跳转到登陆界面
                     location.href="login.html";
-                }else if(data.status===2002){ // 注册时服务器异常
-                    alert(data.message)
-                }else if(data.status===2004){ // 注册时用户名已经被占用
-                    alert(data.message)
                 }
             }
         })
 
+    }
+
+    function logout() {
+        $.ajax({
+            url:"oj/logout",
+            type:"POST",
+            success:function (data,status) {
+                alert(data.message);
+                if(data.state===5002){
+                    location.href="login.html";
+                }
+            }
+        })
     }
 
 

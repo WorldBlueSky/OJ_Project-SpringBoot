@@ -12,12 +12,16 @@
 
         <nav class="navbar navbar-expand-md navbar-dark fixed-top sticky-navigation">
             <a class="navbar-brand font-weight-bold" href="#">在线OJ</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#topMenu" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+
+<!--            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#topMenu" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">-->
+<!--                <span class="navbar-toggler-icon"></span>-->
+<!--            </button>-->
 
             <div class="collapse navbar-collapse" id="topMenu">
+
             </div>
+            <a class="navbar-brand font-weight-bold" href="index.html">主页</a>
+            <a class="navbar-brand font-weight-bold" href="javascript:void(0);"  onclick=logout()>注销</a>
         </nav>
 
         <!--hero section-->
@@ -145,6 +149,19 @@
             }
 
             getProblems();
+
+            function logout() {
+                $.ajax({
+                    url:"oj/logout",
+                    type:"POST",
+                    success:function (data,status) {
+                        alert(data.message);
+                        if(data.state===5002){
+                            location.href="login.html";
+                        }
+                    }
+                })
+            }
 
         </script>
     </body>

@@ -3,6 +3,7 @@ package com.example.demo.mapper;
 import com.example.demo.pojo.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,4 +20,12 @@ public interface UserMapper {
     User selectById(int id);
 
     User selectByName(String username);
+
+    User selectByNameAndId(String id,String username);
+
+    // 用户名模糊查询
+    List<User> selectByLikeName(String likeName);
+
+    int update(@Param("id") int id, @Param("password") String password);
+
 }

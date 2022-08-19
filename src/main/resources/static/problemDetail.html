@@ -16,10 +16,13 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-           
-        </nav>
+            <div class="collapse navbar-collapse" id="topMenu">
 
-   
+            </div>
+            <a class="navbar-brand font-weight-bold" href="index.html">主页</a>
+                <a class="navbar-brand font-weight-bold" href="javascript:void(0);"  onclick=logout()>注销</a>
+
+        </nav>
 
         <!--components-->
       
@@ -41,9 +44,6 @@
                         </div>
                     </div>
                 </div>
-
-
-       
 
                     <!-- Forms  -->
                     <h2> 代码编辑框 </h2>
@@ -108,16 +108,6 @@
                         </div>
                     </div>
                 </div>
-
-
-
-      
-
-       
-
-
-
-           
             </div>
         </section>
 
@@ -137,7 +127,6 @@
                         <p class="pt-2 text-muted">
                            @  by  RAIN 7
                         </p>
-                      
                     </div>
                 </div>
             </div>
@@ -235,7 +224,6 @@
                                   // 如果编译有问题，就把reason 写到显示界面上
                                   problemResult.innerHTML = data.reason;
                               }
-
                           },error:function (data,status) {
                               alert("服务器异常，提交失败!")
                           }
@@ -245,6 +233,22 @@
             }
 
             getProblem();
+
+
+            function logout() {
+                 $.ajax({
+                     url:"oj/logout",
+                     type:"POST",
+                     success:function (data,status) {
+                        if(data.state===5001){
+                            alert(data.message);
+                        }else if(data.state===5002){
+                            alert(data.message);
+                            location.href="login.html";
+                        }
+                     }
+                 })
+            }
 
         </script>
 

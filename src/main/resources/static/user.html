@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>后台-用户信息管理</title>
+    <meta name="description" content="Charcoal is a free Bootstrap 4 UI kit build by @attacomsian at Wired Dots." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--Bootstrap 4-->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-md navbar-dark fixed-top sticky-navigation">
+    <a class="navbar-brand font-weight-bold" href="#">Spring 练习</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#topMenu" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="topMenu">
+
+    </div>
+
+    <a class="navbar-brand font-weight-bold" href="index.html">主页</a>
+<!--    只有管理员用户才会显示这个模块-->
+<!--    <a class="navbar-brand font-weight-bold" href="user.html">用户信息管理模块</a>-->
+    <a class="navbar-brand font-weight-bold" href="javascript:void(0);"  onclick=logout()>注销</a>
+</nav>
+
+
+
+<!--components-->
+<section class="my-5 pt-5">
+    <div class="container">
+
+        <!-- Tables  -->
+        <div class="row mb-5" id="tables">
+            <div class="col-sm-12">
+                <br class="mt-3 mb-5">
+                <h3>用户信息的增删改查</h3>
+
+                <br>
+                <br>
+
+                <div class="insert">
+                    <span> 用户名：</span>
+                    <input type="text" id="InsertUsername">
+                    <span> 用户密码：</span>
+                    <input type="password" id="InsertPassword">
+                    <button onclick=insertUser()  >添加用户</button>
+                </div>
+
+
+                <br>
+                <br>
+
+                <div class="update">
+                    <span> 用户id：</span>
+                    <input type="number" id="UpdateId">
+                    <span> 用户密码：</span>
+                    <input type="password" id="UpdatePassword">
+                    <button onclick=updateUser()>修改用户</button>
+                </div>
+
+                <br>
+                <br>
+
+                <div class="search">
+
+                    <span> 用户名：</span>
+                    <input type="text" id="SearchUsername">
+
+                    <button onclick=searchUser()>搜索用户</button>
+                </div>
+
+
+
+
+                <br>
+                <br>
+
+
+                <table class="table">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>用户ID</th>
+                        <th>用户名</th>
+                        <th>密码</th>
+                        <th>编辑</th>
+
+                    </tr>
+                    </thead>
+                    <tbody id="usertable">
+
+<!--                                                       <tr>-->
+<!--                                                            <td>1</td>-->
+<!--                                                            <td>两数之和</td>-->
+<!--                                                            <td>简单</td>-->
+<!--                                                           <td> <button onclick="">删除</button> </td>-->
+<!--                                                        </tr>-->
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+
+
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+<script src="js/app.js"></script>
+<script>
+    // 在页面加载的时候，尝试从服务器获取题目列表，通过 ajax 的方式来进行获取
+
+    function getUserMessages() {
+        //console.log("页面开始加载用户信息!")
+        $.ajax({
+            url:'user/selectAll',
+            method:"GET",
+            success:function (data) {
+
+                //console.log(data)
+
+                if(data.state===6020){// 服务器异常，查询失败
+                    alert(data.message);
+                }else if(data.state===6021){
+                    createUserMassages(data.data);
+                }
+            }
+        })
+
+    }
+
+    function insertUser() {
+        let username = document.querySelector("#InsertUsername");
+        let password = document.querySelector("#InsertPassword");
+
+        $.ajax({
+            url:"user/insert?username="+username.value+"&password="+password.value,
+            type:"POST",
+            success:function (data,status) {
+                //console.log("访问成功!");
+                alert(data.message);
+                location.reload();// 强制刷新
+            },error:function () {
+                   console.log("访问接口失败！")
+            }
+        })
+    }
+
+    function updateUser() {
+        let id = document.querySelector("#UpdateId");
+        let password = document.querySelector("#UpdatePassword");
+
+        $.ajax({
+            url:"user/update?id="+id.value+"&password="+password.value,
+            type: "POST",
+            success:function (data,status) {
+                alert(data.message);
+                if(data.state===6031){
+                    // 修改成功，强制刷新
+                    location.reload();
+                }
+            },error:function () {
+              console.log("访问接口失败!")
+            }
+        })
+
+    }
+
+    function searchUser() {
+        let username = document.querySelector("#SearchUsername");
+
+        $.ajax({
+            url:"user/search?username="+username.value,
+            type: "POST",
+            success:function (data,status) {
+
+                alert(data.message);
+                if(data.state===6042){// 这是除了查询无结果之外的情况，就是查到信息了
+                    //console.log("进入到构造页面的函数中!")
+                    createSearchMessages(data);
+                }
+
+            },error:function () {
+                console.log("访问接口失败!")
+            }
+        })
+
+
+        function createSearchMessages(data){
+            // 清空显示的数据
+                 let userTable = document.querySelector("#usertable");
+                 userTable.innerHTML=""
+
+            //console.log(data.data);
+
+            for (let user of data.data){
+
+
+                let tr = document.createElement("tr");
+
+                let tdId = document.createElement("td");
+                tdId.innerHTML = user.id;
+
+                let tdName = document.createElement("td");
+                tdName.innerHTML = user.username;
+
+                let tdPassword = document.createElement("td");
+                tdPassword.innerHTML = user.password;
+
+                let  tdA = document.createElement("td");
+                let  a = document.createElement("a");
+                a.innerHTML="删除";
+                a.href="user/delete?id="+user.id;// 点击发送ajax请求
+                tdA.appendChild(a);
+
+                tr.appendChild(tdId);
+                tr.appendChild(tdName);
+                tr.appendChild(tdPassword);
+                tr.appendChild(tdA);
+
+                userTable.appendChild(tr);
+            }
+        }
+
+    }
+
+
+
+
+    // 使用DOM API 将得到的数据data 写入到页面里面
+    function createUserMassages(data) {
+
+
+        let userTable = document.querySelector("#usertable");
+
+        for (let user of data){
+
+            let tr = document.createElement("tr");
+
+            let tdId = document.createElement("td");
+            tdId.innerHTML = user.id;
+
+            let tdName = document.createElement("td");
+            tdName.innerHTML = user.username;
+
+            let tdPassword = document.createElement("td");
+            tdPassword.innerHTML = user.password;
+
+            let  tdA = document.createElement("td");
+            let  a = document.createElement("a");
+            a.innerHTML="删除";
+            a.href="user/delete?id="+user.id;// 点击发送ajax请求
+            tdA.appendChild(a);
+
+            tr.appendChild(tdId);
+            tr.appendChild(tdName);
+            tr.appendChild(tdPassword);
+            tr.appendChild(tdA);
+
+            userTable.appendChild(tr);
+        }
+
+
+
+    }
+
+    getUserMessages();
+
+</script>
+</body>
+</html>

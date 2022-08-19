@@ -1,6 +1,7 @@
-package com.example.demo.service;
+package com.example.demo.service.impl;
 
 import com.example.demo.pojo.TencentCloudUser;
+import com.example.demo.service.SendSmsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -19,7 +20,7 @@ import com.tencentcloudapi.sms.v20210111.SmsClient;
 import com.tencentcloudapi.sms.v20210111.models.SendSmsRequest;
 import com.tencentcloudapi.sms.v20210111.models.SendSmsResponse;
 @Service
-public class SendSmsServiceImpl implements SendSmsService{
+public class SendSmsServiceImpl implements SendSmsService {
 
     /**
      * @param phoneNum 短信发送的手机号

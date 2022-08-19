@@ -6,27 +6,25 @@ import com.example.demo.pojo.Answer;
 import com.example.demo.pojo.JsonRequest;
 import com.example.demo.pojo.Problem;
 import com.example.demo.pojo.Question;
-import com.example.demo.service.Task;
+import com.example.demo.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/oj")
 public class CompileController extends BaseController{
 
     @Autowired
-    public Task task;
+    public TaskService taskService;
 
     @Autowired
     public ProblemMapper problemMapper;
 
     @PostMapping(value = "/compile",produces = "application/json")
-    public Map<String, Object> getCompile(@RequestBody JsonRequest jsonRequest) throws ProblemNotFountException {
+    public Answer getCompile(@RequestBody JsonRequest jsonRequest) throws ProblemNotFountException {
 
         //0、读取传递的正文和id，json传递
         int id = Integer.parseInt(jsonRequest.getId());
@@ -38,10 +36,17 @@ public class CompileController extends BaseController{
         //0.5、检查用户提交的代码的安全性，通过对list的黑名单进行查找
         if(!checkCodeSafe(code)){
             //System.out.println("用户提交了不安全的代码!");
-            HashMap<String,Object> map = new HashMap<>();
-            map.put("error",3);
-            map.put("reason","您提交了不安全的代码，可能危害服务器的安全，编译运行失败!");
-            return map;
+            //HashMap<String,Object> map = new HashMap<>();
+            //map.put("error",3);
+            //map.put("reason","您提交了不安全的代码，可能危害服务器的安全，编译运行失败!");
+            //return map;
+
+            Answer answer = new Answer();
+            answer.setError(3);
+            answer.setReason("您提交了不安全的代码，危害服务器安全，编译失败!");
+
+            return answer;
+
         }
 
         //1、从数据库中查找到题目，拿到测试用例代码
@@ -61,15 +66,18 @@ public class CompileController extends BaseController{
         Question question = new Question();
         question.setCode(finalCode);
 
-        Answer answer = task.compileAndRun(question);
+        Answer answer = taskService.compileAndRun(question);
 
         //4根据Task运行的结果，包装成一个 HTTP响应
-        HashMap<String ,Object> map = new HashMap<>();
-        map.put("error",answer.getError());
-        map.put("reason",answer.getReason());
-        map.put("stdout",answer.getStdout());
+        //HashMap<String ,Object> map = new HashMap<>();
+        //map.put("error",answer.getError());
+        //map.put("reason",answer.getReason());
+        //map.put("stdout",answer.getStdout());
 
-        return map;
+
+        //return map;
+
+        return answer;
     }
 
     private String mergeCode(String code, String testCode) {

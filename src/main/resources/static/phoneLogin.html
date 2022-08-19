@@ -12,13 +12,14 @@
 <!-- 导航栏 -->
 <div class="nav">
     <!-- logo -->
-    <img src="img/logo2.jpg" alt="">
+    <img src="img/cat.jpg" alt="">
     <!-- 标题 -->
-    <span class="title">我的博客系统</span>
+    <span class="title">Java 在线OJ 系统</span>
     <!-- 空白的占位符 -->
     <span class="spacer"></span>
     <!-- 右侧的几个链接 -->
-    <a href="logout" style="display: none;">注销</a>
+    <a class="navbar-brand font-weight-bold" href="index.html">主页</a>
+    <a class="navbar-brand font-weight-bold" href="javascript:void(0);"  onclick=logout()>注销</a>
 </div>
 
 <!-- 登录页面的页面容器, 为了和其他页面样式区分开, 使用不同的类名 -->
@@ -61,16 +62,8 @@
             url:"oj/phoneLogin"+"?phone="+phoneNumber.value+"&code="+code.value,
             type:"POST",
             success:function (data,status) {
-                if(data.status===4005){//输入为空
-                    alert(data.message);
-                }else if(data.status===4006){// 格式非法。长度不对
-                    alert(data.message);
-                }else if(data.status===4007){//查询不到验证码
-                    alert(data.message);
-                }else if(data.status===4008){//查到验证码，比对失败
-                    alert(data.message);
-                }else if(data.status===4009){//比对成功，登陆主页
-                    alert(data.message);
+                alert(data.message);
+                if(data.state===4009){//比对成功，登陆主页
                     location.href="index.html";
                 }
             }
@@ -86,18 +79,10 @@
             url:'oj/phoneSend'+"?phone="+phoneNumber.value,
             type:'POST',
             success(data,status){
-                if(data.status===4000){//输入为空
-                    alert(data.message);
-                }else if(data.status===4001){// 格式非法。长度不对
-                    alert(data.message);
-                }else if(data.status===4002){//验证码还未过期，发送失败!
-                    alert(data.message);
-                }else if(data.status===4003){//验证码发送成功，请及时填写，2分钟有效
+                if(data.state===4003){//验证码发送成功，请及时填写，2分钟有效
                     f();// 只有在真正发送成功的时候，按钮才会禁用
-                    alert(data.message);
-                }else if(data.status===4009){//验证码发送失败
-                    alert(data.message);
                 }
+                alert(data.message);
             }
         })
 
@@ -129,7 +114,20 @@
 
     }
 
-
+    function logout() {
+        $.ajax({
+            url:"oj/logout",
+            type:"POST",
+            success:function (data,status) {
+                if(data.state===5001){
+                    alert(data.message);
+                }else if(data.state===5002){
+                    alert(data.message);
+                    location.href="login.html";
+                }
+            }
+        })
+    }
 
 </script>
 

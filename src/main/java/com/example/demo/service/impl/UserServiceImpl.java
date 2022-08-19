@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package com.example.demo.service.impl;
 
 import com.example.demo.exception.InsertException;
 import com.example.demo.exception.PasswordNotMatchException;
@@ -6,6 +6,7 @@ import com.example.demo.exception.UsernameDuplicatedException;
 import com.example.demo.exception.UsernameNotFoundException;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.pojo.User;
+import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
@@ -14,7 +15,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     @Autowired
     public UserMapper userMapper;
@@ -68,7 +69,7 @@ public class UserServiceImpl implements UserService{
      * @param salt    随机生成的盐值
      * @return 返回加密之后的密码
      */
-    private String getMd5Password(String password,String salt){
+    public static String getMd5Password(String password,String salt){
         // springBoot提供了一个加密工具类 DigestUtils
 
         for(int i = 0;i<3;i++){

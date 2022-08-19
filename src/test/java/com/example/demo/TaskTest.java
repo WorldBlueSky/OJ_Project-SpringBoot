@@ -2,14 +2,14 @@ package com.example.demo;
 
 import com.example.demo.pojo.Answer;
 import com.example.demo.pojo.Question;
-import com.example.demo.service.Task;
+import com.example.demo.service.impl.TaskServiceImpl;
 import org.junit.Test;
 
 public class TaskTest {
 
     @Test
     public void test(){
-        Task task = new Task();
+        TaskServiceImpl task = new TaskServiceImpl();
         Question question = new Question();
         question.setCode("public class Solution {\n" +
                 "\n" +

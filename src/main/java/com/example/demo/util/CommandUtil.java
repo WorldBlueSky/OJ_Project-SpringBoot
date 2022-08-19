@@ -8,6 +8,14 @@ public class CommandUtil {
 
     // 创建子进程，执行指定命令
 
+    /**
+     *
+     * @param cmd 子进程执行的命令
+     * @param stdoutFile 标准输出 写入的文件路径
+     * @param stderrFile 标准错误 写入的文件路径
+     * @return 返回进程的状态码
+     */
+
    public static int run(String cmd,String stdoutFile,String stderrFile){
        try {
            //1、通过Runtime类，执行exec

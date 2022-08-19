@@ -1,7 +1,8 @@
-package com.example.demo.service;
+package com.example.demo.service.impl;
 
 import com.example.demo.pojo.Answer;
 import com.example.demo.pojo.Question;
+import com.example.demo.service.TaskService;
 import com.example.demo.util.CommandUtil;
 import com.example.demo.util.FileUtil;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ import java.util.UUID;
 
 // 每次的编译+运行作为一个Task
 @Service
-public class Task {
+public class TaskServiceImpl implements TaskService {
 
     // 进程与进程之间是存在独立性的，一个进程很难影响到其他进程
     //临时文件进行进程间通信
@@ -37,7 +38,7 @@ public class Task {
     //存在运行输出信息的文件名
     private static  String STDOUT;
 
-    public Task() {
+    public TaskServiceImpl() {
         WORK_DIR="./tmp/"+UUID.randomUUID().toString()+"/";
         CODE=WORK_DIR+"Solution.java";
         COMPILE_ERROR = WORK_DIR+"compileError.txt";
@@ -86,7 +87,7 @@ public class Task {
 
         String compileError = FileUtil.readFile(COMPILE_ERROR);
 
-        if(!compileError.equals("")){
+        if(compileError==null || !compileError.equals("")){
             // System.out.println("编译出错!");
             // 编译出错，直接返回answer
             answer.setError(1);
@@ -107,7 +108,7 @@ public class Task {
 
         String runStderr = FileUtil.readFile(STDERR);
 
-        if(!runStderr.equals("")){
+        if(runStderr==null || !runStderr.equals("")){
             // System.out.println("运行出错!");
             // 设置运行错误的返回结果
             answer.setError(2);
