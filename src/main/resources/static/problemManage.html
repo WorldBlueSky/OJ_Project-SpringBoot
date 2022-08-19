@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>后台-用户信息管理</title>
+    <meta name="description" content="Charcoal is a free Bootstrap 4 UI kit build by @attacomsian at Wired Dots." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--Bootstrap 4-->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-md navbar-dark fixed-top sticky-navigation">
+    <a class="navbar-brand font-weight-bold" href="problemManage.html">用户信息管理模块</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#topMenu" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="topMenu">
+
+    </div>
+
+    <a class="navbar-brand font-weight-bold" href="index.html">主页</a>
+    <!--    只有管理员用户才会显示这个模块-->
+    <!--    <a class="navbar-brand font-weight-bold" href="userManage.html">用户信息管理模块</a>-->
+    <a class="navbar-brand font-weight-bold" href="javascript:void(0);"  onclick=logout()>注销</a>
+</nav>
+
+
+
+<!--components-->
+<section class="my-5 pt-5">
+    <div class="container">
+
+        <!-- Tables  -->
+        <div class="row mb-5" id="tables">
+            <div class="col-sm-12">
+                <br class="mt-3 mb-5">
+                <h1 style="text-align: center">题目信息后台管理</h1>
+
+                <br>
+                <br>
+
+
+
+                <div class="search">
+
+                    <div style="text-align: center">
+                        <span style="font-size: 25px"> 题目标题：</span>
+                        <input  id="SearchTitle" style="width: 500px;height: 40px">
+                        <button onclick=searchProblem() style="height: 40px;width: 70px;background: #d4f5fa;"> 搜索 </button>
+                    </div>
+
+                    <br>
+
+                    <div class="insert" style="text-align: right">
+                        <span style="font-size: 20px">更多操作：</span>
+                        <a href="problemInsert.html" style="font-size: 20px">增加题目</a>
+                    </div>
+                </div>
+
+
+
+
+
+
+                <br>
+                <br>
+
+
+                <table class="table">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>题目ID</th>
+                        <th>标题</th>
+                        <th>编辑1</th>
+                        <th>编辑2</th>
+
+                    </tr>
+                    </thead>
+                    <tbody id="problemTable">
+
+<!--                    <tr>-->
+<!--                        <td>1</td>-->
+<!--                        <td>两数之和</td>-->
+<!--                        <td> <a href="#">修改</a> </td>-->
+<!--                        <td> <a href="#">删除</a> </td>-->
+<!--                    </tr>-->
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+
+
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+<script src="js/app.js"></script>
+<script>
+    // 在页面加载的时候，尝试从服务器获取题目列表，通过 ajax 的方式来进行获取
+    getProblems();
+    function getProblems() {
+        // 1. 通过 ajax 从服务器获取到题目列表
+        $.ajax({
+            url:"oj/problems",
+            type:"GET",
+            success:function (data,status) {
+                makeProblemTable(data);
+            },
+            error:function () {
+                alert("服务器异常，获取题目信息失败!");
+            }
+        })
+    }
+
+    function makeProblemTable(data){
+        // 通过这个函数把数据转换成HTML 片段
+        let problemTable = document.querySelector("#problemTable");
+        problemTable.innerHTML="";
+        for(let problem of data ){
+
+            let tr = document.createElement("tr");
+
+            let tdId = document.createElement("td");
+            tdId.innerHTML = problem.id;
+            tr.appendChild(tdId);
+
+            let tdTitle = document.createElement("td");
+            tdTitle.innerHTML=problem.title;
+            tr.appendChild(tdTitle);
+
+            //TODO
+            let aUpdate = document.createElement("td");
+            let a1 = document.createElement("a");
+            a1.innerHTML="修改";
+            a1.href = "problemUpdate.html?id="+problem.id;
+            a1.target = "_blank";
+            aUpdate.appendChild(a1);
+            tr.appendChild(aUpdate);
+
+            let aDelete = document.createElement("td");
+            let a2 = document.createElement("a");
+            a2.innerHTML="删除";
+            a2.href = "manage/delete?id="+problem.id;
+            aDelete.appendChild(a2);
+            tr.appendChild(aDelete);
+
+            problemTable.appendChild(tr);
+        }
+
+
+    }
+
+
+    function searchProblem() {
+        let title = document.querySelector("#SearchTitle");
+
+        $.ajax({
+            url:"manage/select?title="+title.value,
+            type: "POST",
+            success:function (data,status) {
+                alert(data.message);
+                if(data.state===7033){// 这是除了查询无结果之外的情况，就是查到信息了
+                    //console.log("进入到构造页面的函数中!")
+                    makeProblemTable(data.data);
+                }
+
+            },error:function () {
+                console.log("访问接口失败!")
+            }
+        });
+
+
+    }
+
+
+</script>
+</body>
+</html>

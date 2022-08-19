@@ -2,10 +2,9 @@ package com.example.demo.controller;
 
 import com.example.demo.exception.InsertException;
 import com.example.demo.exception.UsernameDuplicatedException;
-import com.example.demo.exception.deleteException;
-import com.example.demo.exception.updateException;
+import com.example.demo.exception.DeleteException;
+import com.example.demo.exception.UpdateException;
 import com.example.demo.mapper.UserMapper;
-import com.example.demo.pojo.JsonRequest;
 import com.example.demo.pojo.JsonResult;
 import com.example.demo.pojo.User;
 import com.example.demo.service.UserService;
@@ -13,15 +12,13 @@ import com.example.demo.service.impl.UserServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -70,7 +67,7 @@ public class UserManageController extends BaseController{
     // 根据id删除用户
     // 6010-6019
     @RequestMapping("/delete")
-    public void delete(String id, HttpServletResponse resp) throws deleteException, IOException {
+    public void delete(String id, HttpServletResponse resp) throws DeleteException, IOException {
         
         int idString =Integer.parseInt(id);
 
@@ -78,11 +75,11 @@ public class UserManageController extends BaseController{
         
         if(row!=1){
             //System.out.println("删除失败!");
-            throw new deleteException("删除失败!");
+            throw new DeleteException("删除失败!");
         }
 
         // 此时说明删除成功,转发到管理界面，相当于刷新界面
-        resp.sendRedirect("../user.html");
+        resp.sendRedirect("../userManage.html");
     }
 
     // 查询用户
@@ -107,7 +104,7 @@ public class UserManageController extends BaseController{
    // 根据id修改用户
     //6030-6039
     @RequestMapping("/update")
-    public JsonResult<Void> update(String id,String password) throws updateException {
+    public JsonResult<Void> update(String id,String password) throws UpdateException {
         JsonResult<Void> result = new JsonResult<>();
         //1、根据id查找用户是否存在，如果不存在，那么返回信息提示：id参数非法，用户不存在
         if(id==null || id.equals("") || password==null || password.equals("")){
@@ -130,7 +127,7 @@ public class UserManageController extends BaseController{
         int row = userMapper.update(user.getId(),finalPassword);
 
         if(row!=1){
-            throw new updateException("修改失败!");
+            throw new UpdateException("修改失败!");
         }
 
         result.setState(6031);
@@ -144,14 +141,14 @@ public class UserManageController extends BaseController{
 
         JsonResult<List<User>> result = new JsonResult<>();
 
-        if(username==null || username.equals("")){
+        if(username==null){
             result.setState(6040);
-            result.setMessage("请输入搜索的用户名!");
+            result.setMessage("参数非法!");
             return result;
         }
 
         List<User> list = userMapper.selectByLikeName("%"+username+"%");
-        if(list==null){// 说明查询没有结果
+        if(list==null|| list.isEmpty()){// 说明查询没有结果
             result.setState(6041);
             result.setMessage("此次查询未查找到相关结果!");
             return result;
@@ -165,6 +162,24 @@ public class UserManageController extends BaseController{
         System.out.println(list);
         return result;
 
+    }
+
+    @RequestMapping("/isload")
+    public JsonResult<Void> load(HttpSession session){
+
+        JsonResult<Void> result = new JsonResult<>();
+
+        User user = (User)session.getAttribute("user");
+        if(user.getIsAdmin()==1){
+            // 说明当前用户是管理员用户
+            result.setState(6050);
+            result.setMessage("当前用户是管理员用户!");
+            return result;
+        }
+
+        result.setState(6051);
+        result.setMessage("当前用户只是普通用户!");
+        return result;
     }
 
 }

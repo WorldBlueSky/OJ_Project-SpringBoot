@@ -66,11 +66,11 @@ public class BaseController {
             result.setState(3002);
             result.setMessage("输入的用户名不存在，请重新输入!");
 
-        }else if(e instanceof deleteException){
+        }else if(e instanceof DeleteException){
             
             result.setState(6010);
             result.setMessage("服务器异常，删除失败!");
-        }else if(e instanceof updateException){
+        }else if(e instanceof UpdateException){
             result.setMessage("服务器异常，修改失败!");
         }
 

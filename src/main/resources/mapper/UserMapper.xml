@@ -7,7 +7,7 @@
 
 
     <insert id="insert" parameterType="com.example.demo.pojo.User">
-        insert into user(id, username, password,isAdmin,salt) values (0,#{username},#{password},0,#{salt})
+        insert into user(id, username, password,isAdmin,salt) values (0,#{username},#{password},#{isAdmin},#{salt})
     </insert>
 
     <update id="update">

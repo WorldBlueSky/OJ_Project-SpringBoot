@@ -22,4 +22,16 @@ public interface ProblemMapper {
     //4、查询一个题目
     Problem selectOne(@Param("id") int id);
 
+    //5、查询题目根据名字、模糊查询
+    List<Problem> selectByLikeTitle(String likeTitle);
+
+    //6、根据id修改题目信息
+    int updateById(@Param("id") int id,
+                   @Param("title") String title,
+                   @Param("level") String level,
+                   @Param("description") String description,
+                   @Param("template") String template,
+                   @Param("testCode") String testCode);
+
+
 }

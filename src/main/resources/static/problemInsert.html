@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>后台-用户信息管理</title>
+    <meta name="description" content="Charcoal is a free Bootstrap 4 UI kit build by @attacomsian at Wired Dots." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--Bootstrap 4-->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-md navbar-dark fixed-top sticky-navigation">
+    <a class="navbar-brand font-weight-bold" href="problemManage.html">题目信息管理模块</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#topMenu" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="topMenu">
+
+    </div>
+
+    <a class="navbar-brand font-weight-bold" href="index.html">主页</a>
+    <!--    只有管理员用户才会显示这个模块-->
+    <!--    <a class="navbar-brand font-weight-bold" href="userManage.html">用户信息管理模块</a>-->
+    <a class="navbar-brand font-weight-bold" href="javascript:void(0);"  onclick=logout()>注销</a>
+</nav>
+
+
+
+<!--components-->
+<section class="my-5 pt-5">
+    <div class="container">
+
+        <!-- Tables  -->
+        <div class="row mb-5" id="tables">
+            <div class="col-sm-12">
+                <br class="mt-3 mb-5">
+                <h1 style="text-align: center">题目信息后台管理---增加题目信息</h1>
+
+                <br>
+                <br>
+
+                <h2>题目标题</h2>
+
+                <br>
+                <br>
+
+<!--                放一个题目标题字+文本框-->
+                <div class="title">
+                    <input class="form-control" type="text" id="titleString" style="height: 40px">
+                </div>
+
+
+                <br>
+                <br>
+
+                <h2>题目难度</h2>
+
+                <br>
+                <br>
+
+                <div class="level">
+
+                    <input  class="form-control" type="text" id="levelString" style="height: 40px">
+                </div>
+
+                <br>
+                <br>
+
+                <h2> 题目描述 </h2>
+
+                <br>
+                <br>
+
+                <div class="description">
+                    <textarea class="form-control" id="descriptionString" style="width: 100%;  height:400px;" ></textarea>
+                </div>
+
+
+                <br>
+                <br>
+
+                <h2> 模板代码框 </h2>
+
+                <br>
+                <br>
+
+
+                <div class="row mb-5" id="tmp">
+                    <div class="col-sm-12">
+                        <div class="row mt-4">
+                            <div class="col-sm-12 pb-4">
+
+                                    <div class="form-group">
+                                        <div id="editorTemp" style="min-height:400px">
+                                            <textarea class="form-control" id="codeEditorTemp" style="width: 100%;  height:400px;" ></textarea>
+                                        </div>
+                                    </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <br>
+                <br>
+
+                <h2> 测试用例代码框 </h2>
+
+                <br>
+                <br>
+
+
+                <div class="row mb-5" id="test">
+                    <div class="col-sm-12">
+                        <div class="row mt-4">
+                            <div class="col-sm-12 pb-4">
+
+                                    <div class="form-group">
+                                        <div id="editorTest" style="min-height:400px">
+                                            <textarea class="form-control" id="codeEditorTest" style="width: 100%;  height:400px;" ></textarea>
+                                        </div>
+                                    </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Buttons  -->
+                <div class="row mb-5" id="buttons">
+                    <div class="col-sm-12">
+                        <div class="row mt-4">
+                            <div class="col-sm-6 pb-4" >
+                                <button style="float: right" type="button" class="btn btn-primary" id="submitButton" onclick=aaa() >提交</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+
+
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+<script src="js/app.js"></script>
+
+<script src="https://cdn.bootcss.com/ace/1.2.9/ace.js"></script>
+<script src="https://cdn.bootcss.com/ace/1.2.9/ext-language_tools.js"></script>
+<script>
+
+    function initAce(a) {
+        // 参数 editor 就对应到刚才在 html 里加的那个 div 的 id
+        let editor = ace.edit(a);
+        editor.setOptions({
+            enableBasicAutocompletion: true,
+            enableSnippets: true,
+            enableLiveAutocompletion: true
+        });
+
+        editor.setTheme("ace/theme/twilight");
+        editor.session.setMode("ace/mode/java");
+        editor.resize();
+        document.getElementById(a).style.fontSize = '20px';
+        return editor;
+    }
+
+    let editorTemp = initAce("editorTemp");
+    let editorTest = initAce("editorTest");
+    let title = document.querySelector('#titleString');
+    let level = document.querySelector('#levelString');
+    let desc = document.getElementById('titleString');
+
+    function aaa() {
+
+        let body ={
+            title:title.value,
+            level:level.value,
+            description:desc.value,
+            template:editorTemp.getValue(),
+            testCode:editorTest.getValue()
+        }
+
+        $.ajax({
+            url:"manage/insert",
+            type:"POST",
+            data:JSON.stringify(body),
+            contentType:"application/json;charset=utf8",
+            success:function (data) {
+               alert(data.message);
+            }
+        })
+    }
+
+</script>
+</body>
+</html>

@@ -1,8 +1,13 @@
 package com.example.demo;
 
+import com.example.demo.exception.InsertException;
+import com.example.demo.exception.UsernameDuplicatedException;
 import com.example.demo.mapper.ProblemMapper;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.pojo.Problem;
+import com.example.demo.pojo.User;
+import com.example.demo.service.UserService;
+import com.example.demo.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +24,11 @@ class DemoApplicationTests {
     @Autowired
     public UserMapper userMapper;
 
+    @Autowired
+    public UserService userService;
+
     @Test
-    void contextLoads() {
+    void contextLoads() throws InsertException, UsernameDuplicatedException {
         Problem problem = new Problem();
         problem.setId(0);
         problem.setTitle("两数之和");
@@ -99,7 +107,14 @@ class DemoApplicationTests {
 
 //        problemMapper.insert(problem);
 //           problemMapper.delete(2);
-        problemMapper.insert(problem);
+//        problemMapper.insert(problem);
+
+        User user = new User();
+        user.setUsername("root");
+        user.setPassword("123456");
+        user.setSalt("ASDDFDF");
+        user.setIsAdmin(1);
+        userService.register(user);
     }
 
 }

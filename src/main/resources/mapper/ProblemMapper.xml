@@ -9,6 +9,12 @@
         insert into oj_table values (0,#{title},#{level},#{description},#{template},#{testCode})
     </insert>
 
+    <update id="updateById" >
+        update oj_table set title=#{title},level=#{level},
+                            description=#{description},template=#{template},
+                            testCode=#{testCode} where id=#{id}
+    </update>
+
     <delete id="delete">
         delete from oj_table where id=#{id}
     </delete>
@@ -19,6 +25,11 @@
 
     <select id="selectOne" resultType="com.example.demo.pojo.Problem">
         select * from oj_table where id = #{id}
+    </select>
+
+
+    <select id="selectByLikeTitle" resultType="com.example.demo.pojo.Problem">
+        select id,title from oj_table where title like '%${likeTitle}%'
     </select>
 
 </mapper>

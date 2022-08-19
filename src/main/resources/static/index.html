@@ -10,7 +10,7 @@
     </head>
     <body>
 
-        <nav class="navbar navbar-expand-md navbar-dark fixed-top sticky-navigation">
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top sticky-navigation" id="nav">
             <a class="navbar-brand font-weight-bold" href="#">在线OJ</a>
 
 <!--            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#topMenu" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">-->
@@ -20,6 +20,7 @@
             <div class="collapse navbar-collapse" id="topMenu">
 
             </div>
+
             <a class="navbar-brand font-weight-bold" href="index.html">主页</a>
             <a class="navbar-brand font-weight-bold" href="javascript:void(0);"  onclick=logout()>注销</a>
         </nav>
@@ -33,7 +34,7 @@
                         <p class="lead text-capitalize my-4">
                             基于 Java-SpringBoot 搭建的在线 OJ 平台
                         </p>
-                        <a href="#" class="btn btn-outline-light btn-radius btn-lg">项目链接</a>
+                        <a href="https://gitee.com/chenruiqi21/OJ_Project" target="_blank" class="btn btn-outline-light btn-radius btn-lg">项目链接</a>
                     </div>
                 </div>
             </div>
@@ -103,6 +104,33 @@
         <script>
             // 在页面加载的时候，尝试从服务器获取题目列表，通过 ajax 的方式来进行获取
 
+            getUserManageMdel();
+            function getUserManageMdel() {
+                // 满足一定的条件要把a标签给加上
+               $.ajax({
+                   url:"user/isload",
+                   type:"POST",
+                   success:function (data,status) {
+                      if(data.state===6050){// 当前用户是管理员用户
+                          let a1 =document.createElement("a");
+                          a1.href="userManage.html";
+                          a1.innerHTML="用户信息管理模块";
+                          a1.className ="navbar-brand font-weight-bold";
+
+                          let a2 =document.createElement("a");
+                          a2.href="problemManage.html";
+                          a2.innerHTML="题目信息管理模块";
+                          a2.className ="navbar-brand font-weight-bold";
+
+                          let nav = document.querySelector("#nav");
+                          nav.appendChild(a1);
+                          nav.appendChild(a2);
+                      }
+                      // 如果不是的话，那么是普通用户，就什么都不做
+                   }
+               })
+            }
+
             function getProblems() {
                 // 1. 通过 ajax 从服务器获取到题目列表
                 $.ajax({
@@ -124,10 +152,14 @@
 
                         let tr = document.createElement("tr");
                         let tdId = document.createElement("td");
+
                         tdId.innerHTML = problem.id;
                         tr.appendChild(tdId);
+
                         let tdTitle = document.createElement("td");
+
                         let a = document.createElement("a");
+
                         a.innerHTML = problem.title;
 
                         //TODO 

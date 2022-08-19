@@ -11,7 +11,7 @@
 <body>
 
 <nav class="navbar navbar-expand-md navbar-dark fixed-top sticky-navigation">
-    <a class="navbar-brand font-weight-bold" href="#">Spring 练习</a>
+    <a class="navbar-brand font-weight-bold" href="userManage.html">用户信息管理模块</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#topMenu" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand font-weight-bold" href="index.html">主页</a>
 <!--    只有管理员用户才会显示这个模块-->
-<!--    <a class="navbar-brand font-weight-bold" href="user.html">用户信息管理模块</a>-->
+<!--    <a class="navbar-brand font-weight-bold" href="userManage.html">用户信息管理模块</a>-->
     <a class="navbar-brand font-weight-bold" href="javascript:void(0);"  onclick=logout()>注销</a>
 </nav>
 
@@ -36,7 +36,12 @@
         <div class="row mb-5" id="tables">
             <div class="col-sm-12">
                 <br class="mt-3 mb-5">
-                <h3>用户信息的增删改查</h3>
+                <h1 style="text-align: center">用户信息后台管理</h1>
+
+                <br>
+                <br>
+
+                <h3>添加用户操作</h3>
 
                 <br>
                 <br>
@@ -53,10 +58,15 @@
                 <br>
                 <br>
 
+                <h3>修改用户操作</h3>
+
+                <br>
+                <br>
+
                 <div class="update">
                     <span> 用户id：</span>
                     <input type="number" id="UpdateId">
-                    <span> 用户密码：</span>
+                    <span> 修改密码：</span>
                     <input type="password" id="UpdatePassword">
                     <button onclick=updateUser()>修改用户</button>
                 </div>
@@ -64,12 +74,17 @@
                 <br>
                 <br>
 
-                <div class="search">
+                <h3>查询用户操作</h3>
 
-                    <span> 用户名：</span>
-                    <input type="text" id="SearchUsername">
+                <br>
+                <br>
 
-                    <button onclick=searchUser()>搜索用户</button>
+                <div class="search" style="text-align: center">
+
+                    <span style="font-size: 20px"> 用户名：</span>
+                    <input type="text" id="SearchUsername" style="width: 500px;height: 40px">
+
+                    <button onclick=searchUser() style="height: 40px;width: 70px;background: #d4f5fa;">搜索</button>
                 </div>
 
 
@@ -178,10 +193,9 @@
             url:"user/search?username="+username.value,
             type: "POST",
             success:function (data,status) {
-
                 alert(data.message);
                 if(data.state===6042){// 这是除了查询无结果之外的情况，就是查到信息了
-                    //console.log("进入到构造页面的函数中!")
+                    console.log("进入到构造页面的函数中!")
                     createSearchMessages(data);
                 }
 
