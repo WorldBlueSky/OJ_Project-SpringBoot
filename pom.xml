@@ -107,6 +107,7 @@
             </resource>
         </resources>
 
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -135,9 +136,12 @@
                 </executions>
             </plugin>
         </plugins>
+
+        <finalName>ojProject</finalName>
+
     </build>
 
-
+     <packaging>jar</packaging>
 
 
 
