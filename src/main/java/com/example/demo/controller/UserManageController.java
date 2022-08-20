@@ -42,14 +42,14 @@ public class UserManageController extends BaseController{
 
         JsonResult<Void> result = new JsonResult<>();
 
-        if(username==null || username.equals("")||password==null ||password.equals("")){
+        if(username==null || username.trim().equals("")||password==null ||password.trim().equals("")){
             result.setMessage("用户名 或 密码不能为空!");
             return result;
         }
 
         User user = new User();
-        user.setUsername(username);
-        user.setPassword(password);
+        user.setUsername(username.trim());
+        user.setPassword(password.trim());
         // 增加用户就相当于注册
         userService.register(user);
 
@@ -69,7 +69,7 @@ public class UserManageController extends BaseController{
     @RequestMapping("/delete")
     public void delete(String id, HttpServletResponse resp) throws DeleteException, IOException {
         
-        int idString =Integer.parseInt(id);
+        int idString =Integer.parseInt(id.trim());
 
         int row = userMapper.delete(idString);
         
@@ -107,12 +107,12 @@ public class UserManageController extends BaseController{
     public JsonResult<Void> update(String id,String password) throws UpdateException {
         JsonResult<Void> result = new JsonResult<>();
         //1、根据id查找用户是否存在，如果不存在，那么返回信息提示：id参数非法，用户不存在
-        if(id==null || id.equals("") || password==null || password.equals("")){
+        if(id==null || id.trim().equals("") || password==null || password.equals("")){
             result.setMessage("id 或 密码不能为空!");
             return result;
         }
 
-        User user = userMapper.selectById(Integer.parseInt(id));
+        User user = userMapper.selectById(Integer.parseInt(id.trim()));
 
         System.out.println(user);
         if(user==null){
@@ -147,7 +147,7 @@ public class UserManageController extends BaseController{
             return result;
         }
 
-        List<User> list = userMapper.selectByLikeName("%"+username+"%");
+        List<User> list = userMapper.selectByLikeName("%"+username.trim()+"%");
         if(list==null|| list.isEmpty()){// 说明查询没有结果
             result.setState(6041);
             result.setMessage("此次查询未查找到相关结果!");
@@ -159,7 +159,7 @@ public class UserManageController extends BaseController{
         result.setMessage("查找结果已显示在当前页面中!");
         result.setData(list);
 
-        System.out.println(list);
+        //System.out.println(list);
         return result;
 
     }

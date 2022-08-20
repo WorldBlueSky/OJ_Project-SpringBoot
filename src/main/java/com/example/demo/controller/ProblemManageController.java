@@ -35,10 +35,10 @@ public class ProblemManageController extends BaseController{
             return result;
         }
 
-        if(problem.getTitle().equals("")||problem.getLevel().equals("")
-                ||problem.getDescription().equals("")
-                || problem.getTemplate().equals("")
-                || problem.getTestCode().equals("")
+        if(problem.getTitle().trim().equals("")||problem.getLevel().trim().equals("")
+                ||problem.getDescription().trim().equals("")
+                || problem.getTemplate().trim().equals("")
+                || problem.getTestCode().trim().equals("")
         ){
             result.setMessage("您提交的信息不完整，请补全题目信息在提交!");
             return result;
@@ -67,11 +67,11 @@ public class ProblemManageController extends BaseController{
             return result;
         }
 
-        if(problem.getTitle().equals("") ||
-                problem.getLevel().equals("")||
-                problem.getDescription().equals("")||
-                problem.getTemplate().equals("")||
-                problem.getTestCode().equals("")
+        if(problem.getTitle().trim().equals("") ||
+                problem.getLevel().trim().equals("")||
+                problem.getDescription().trim().equals("")||
+                problem.getTemplate().trim().equals("")||
+                problem.getTestCode().trim().equals("")
         ){
             result.setMessage("填入的题目信息不全，请补全信息后再次提交!");
             return result;
@@ -79,9 +79,9 @@ public class ProblemManageController extends BaseController{
 
         int idString = Integer.parseInt(id);
         int rows = problemMapper.updateById(
-                idString,problem.getTitle(),
-                problem.getLevel(), problem.getDescription(),
-                problem.getTemplate(),problem.getTestCode()
+                idString,problem.getTitle().trim(),
+                problem.getLevel().trim(), problem.getDescription().trim(),
+                problem.getTemplate().trim(),problem.getTestCode().trim()
         );
 
         if(rows!=1){
@@ -129,7 +129,7 @@ public class ProblemManageController extends BaseController{
             return result;
         }
 
-        List<Problem> list = problemMapper.selectByLikeTitle(title);
+        List<Problem> list = problemMapper.selectByLikeTitle(title.trim());
         if(list==null||list.isEmpty()){
             result.setState(7032);
             result.setMessage("未查询到相关题目信息!");
@@ -181,7 +181,7 @@ public class ProblemManageController extends BaseController{
         result.setMessage("已查询到相关信息显示在当前界面上");
         result.setData(problem);
 
-        System.out.println(problem);
+        //System.out.println(problem);
 
         return result;
     }

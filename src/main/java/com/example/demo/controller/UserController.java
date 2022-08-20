@@ -251,7 +251,7 @@ public class UserController extends BaseController{
         JsonResult<Void> result = new JsonResult<>();
 
         //0、对参数进行校验
-        if(phone==null|| phone.equals("")||code==null || code.equals("")){
+        if(phone==null|| phone.trim().equals("")||code==null || code.trim().equals("")){
             //map.put("status",4005);
             //map.put("message","输入的手机号 或 验证码不能为空，请重新输入!");
             //return map;
@@ -261,7 +261,7 @@ public class UserController extends BaseController{
             return result;
         }
 
-        if(phone.length()!=11 || code.length()!=6){
+        if(phone.trim().length()!=11 || code.trim().length()!=6){
             //map.put("status",4006);
             //map.put("message","输入的手机号格式非法 或者 验证码格式错误，请重新输入!");
             //return map;
@@ -272,7 +272,7 @@ public class UserController extends BaseController{
         }
 
         //1、根据输入的手机号，在redis中查询验证码
-        String phoneCode = (String)redisTemplate.opsForValue().get(phone);
+        String phoneCode = (String)redisTemplate.opsForValue().get(phone.trim());
 
         if(phoneCode==null){// 手机号不存在或者 验证码已经过期了
             //map.put("status",4007);
@@ -285,7 +285,7 @@ public class UserController extends BaseController{
         }
 
         //2、如果验证码存在的话,进行比对
-        if(!code.equals(phoneCode)){// 比对失败
+        if(!code.equals(phoneCode.trim())){// 比对失败
             //map.put("status",4008);
             //map.put("message","验证码输入错误，请重新输入!");
             //return map;
@@ -296,7 +296,7 @@ public class UserController extends BaseController{
         }
 
         //3、如果验证码比对成功，设置全局session，返回登陆成功
-        session.setAttribute("phone",phone);
+        session.setAttribute("phone",phone.trim());
 
         //map.put("status",4009);
         //map.put("message","手机号登陆成功!");
