@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/oj")
+@CrossOrigin
 public class CompileController extends BaseController{
 
     @Autowired
