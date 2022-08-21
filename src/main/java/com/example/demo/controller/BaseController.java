@@ -2,14 +2,12 @@ package com.example.demo.controller;
 
 import com.example.demo.exception.*;
 import com.example.demo.pojo.JsonResult;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.FileNotFoundException;
 
 @RestController
-@CrossOrigin
 public class BaseController {
 
     // 用来处理各种异常

@@ -137,7 +137,7 @@
             </plugin>
         </plugins>
 
-        <finalName>testoj</finalName>
+        <finalName>oj_project</finalName>
 
     </build>
 
