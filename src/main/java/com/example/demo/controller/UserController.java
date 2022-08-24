@@ -9,12 +9,13 @@ import com.example.demo.service.SendSmsService;
 import com.example.demo.service.UserService;
 import com.example.demo.pojo.JsonResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.mail.MailMessage;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -22,8 +23,13 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 这个类中的方法专门处理 用户的各种状态
+ * 登陆、注册、注销
+ */
+
 @RestController
-@RequestMapping("/oj")
+@RequestMapping("/state")
 public class UserController extends BaseController{
     @Autowired
     public UserService userService;
@@ -36,6 +42,11 @@ public class UserController extends BaseController{
 
     public Random random = new Random();
 
+    @Autowired
+    public JavaMailSender javaMailSender;
+
+    @Value("${spring.mail.from}")
+    public String mailFrom;
 
     /**
      *
@@ -53,46 +64,45 @@ public class UserController extends BaseController{
      * (5)排除前面的所有情况，此时注册成功，返回信息提示:注册成功！
      *
      */
+    static class RegUser{
+        public String username;
+        public String password;
+        public String email;
+        public String emailCode;
+    }
+
     @RequestMapping(value = "/reg",produces = "application/json;charset=utf8")
-    public JsonResult<Void> register(String username, String password, String required) throws InsertException, UsernameDuplicatedException {
+    public JsonResult<Void> register(@RequestBody RegUser regUser) throws InsertException, UsernameDuplicatedException {
 
-        HashMap<String,Object> map = new HashMap<>();
+
+        // 如果邮箱地址存在，那么验证码必然存在，前端决定的
+        // 如果邮箱地址不存在，那么验证码必然不存在
         JsonResult<Void> result = new JsonResult<>();
-
-        if(username==null ||username.equals("") || password==null || password.equals("") ||required==null || required.equals("") ){
-            //map.put("status",1001);
-            //map.put("message","用户名或密码不能为空!");
-            //return map;
-
-            result.setState(1001);
-            result.setMessage("用户名密码不能为空!");
-            return result;
-
-        }
-
-//        System.out.println(username);
-//        System.out.println(password);
-//        System.out.println(required);
-
-        if(!password.equals(required)){
-            //map.put("status",1002);
-            //map.put("message","两次密码不一致，请重新输入!");
-            //return map;
-
-            result.setState(1002);
-            result.setMessage("两次密码不一致，请重新输入!");
-            return result;
-        }
-
         User user = new User();
-        user.setUsername(username);
-        user.setPassword(password);
+
+//
+        if(!regUser.email.equals("")){
+            // 说明邮箱地址存在,比对验证码
+            if(redisTemplate.opsForValue().get(regUser.email)==null){
+                 // 如果reids中查不到的话，那么说明这个邮箱地址写了，但是没发验证码，没有保存在redis中
+                result.setMessage("注册失败，请先发送验证码，再点击注册");
+                return result;
+            }
+
+            String redisCode = redisTemplate.opsForValue().get(regUser.email).toString();
+            if(!redisCode.equals(regUser.emailCode)){ // 比对失败
+                result.setMessage("验证码输入错误，请重新输入!");
+                return result;
+            }else{
+                user.setEmail(regUser.email);
+            }
+        }
+
+        user.setUsername(regUser.username);
+        user.setPassword(regUser.password);
 
         userService.register(user);
 
-        //map.put("status",1003);
-        //map.put("message","注册成功!");
-        //return map;
 
         result.setState(1003);
         result.setMessage("注册成功!");
@@ -204,11 +214,10 @@ public class UserController extends BaseController{
         //=====================================================
 
         //1。2 如果不存在的话,那么redis创建键值对生成验证码并存储，设置过期时间
-        String newCode = "";
+
         // 生成6位随机验证码
-        for (int i = 0; i < 6; i++) {
-            newCode += random.nextInt(10);
-        }
+        String newCode = getNewCode();
+
         // 将6位随机验证码对手机号进行发送
         boolean idSend = sendSmsService.send(phone,"1511343",newCode);
 
@@ -334,4 +343,69 @@ public class UserController extends BaseController{
          result.setMessage("注销成功!");
          return result;
      }
+
+
+     @RequestMapping("/emailSend")
+     public JsonResult<Void> sendEmail(String To){
+        // 对邮件的格式进行校验(前端解决)
+
+         JsonResult<Void> result = new JsonResult<>();
+
+         if(!isEmail(To)){
+             result.setState(5003);
+             result.setMessage("输入的邮箱格式非法，请重新输入!");
+             return result;
+         }
+
+         if(!StringUtils.isEmpty(redisTemplate.opsForValue().get(To))){
+             // 如果在redis中查到已经发送过还没有过期，那么就先不发
+             result.setState(5004);
+             result.setMessage("验证码未过期，无法发送，请及时查看");
+             return result;
+         }
+
+         SimpleMailMessage message = new SimpleMailMessage();
+         String newCode = getNewCode();
+         message.setSubject("注册");
+         message.setText("您的注册验证码是："+newCode+"， 有效期2分钟，请及时填写");
+         message.setFrom(mailFrom);
+         message.setTo(To);
+
+         javaMailSender.send(message);
+
+
+         //==============将验证码保存redis中设置 过期时间 120s==============
+         redisTemplate.opsForValue().set(To,newCode,2,TimeUnit.MINUTES);
+
+
+         result.setState(5005);
+         result.setMessage("验证码发送成功，2分钟内有效，请及时填写!");
+         return result;
+     }
+
+    /**
+     * 生成6为随机验证码的方法
+     * @return
+     */
+    private String getNewCode(){
+        String newCode = "";
+         for (int i = 0; i < 6; i++) {
+             newCode += random.nextInt(10);
+         }
+         return newCode;
+     }
+
+    /**
+     * 校验邮箱格式的代码
+     * @param str
+     * @return
+     */
+    public static boolean isEmail(String str) {
+        // TODO Auto-generated method stub
+
+        String tegex="[a-zA-Z0-9_]+@\\w+(\\.com|\\.cn){1}";
+        boolean flag=str.matches(tegex);
+        return flag;
+    }
+
 }

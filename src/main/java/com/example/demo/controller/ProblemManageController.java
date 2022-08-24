@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/manage")
+@RequestMapping("/problemmanage")
 public class ProblemManageController extends BaseController{
 
     @Autowired

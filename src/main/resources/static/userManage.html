@@ -41,40 +41,7 @@
                 <br>
                 <br>
 
-                <h3>添加用户操作</h3>
 
-                <br>
-                <br>
-
-                <div class="insert">
-                    <span> 用户名：</span>
-                    <input type="text" id="InsertUsername">
-                    <span> 用户密码：</span>
-                    <input type="password" id="InsertPassword">
-                    <button onclick=insertUser()  >添加用户</button>
-                </div>
-
-
-                <br>
-                <br>
-
-                <h3>修改用户操作</h3>
-
-                <br>
-                <br>
-
-                <div class="update">
-                    <span> 用户id：</span>
-                    <input type="number" id="UpdateId">
-                    <span> 修改密码：</span>
-                    <input type="password" id="UpdatePassword">
-                    <button onclick=updateUser()>修改用户</button>
-                </div>
-
-                <br>
-                <br>
-
-                <h3>查询用户操作</h3>
 
                 <br>
                 <br>
@@ -87,9 +54,6 @@
                     <button onclick=searchUser() style="height: 40px;width: 70px;background: #d4f5fa;">搜索</button>
                 </div>
 
-
-
-
                 <br>
                 <br>
 
@@ -100,9 +64,11 @@
                         <th>用户ID</th>
                         <th>用户名</th>
                         <th>密码</th>
-                        <th>编辑</th>
-
+                        <th>邮箱</th>
+                        <th>编辑1</th>
+                        <th>编辑2</th>
                     </tr>
+
                     </thead>
                     <tbody id="usertable">
 
@@ -133,12 +99,10 @@
     function getUserMessages() {
         //console.log("页面开始加载用户信息!")
         $.ajax({
-            url:'user/selectAll',
+            url:'usermanage/selectAll',
             method:"GET",
             success:function (data) {
-
                 //console.log(data)
-
                 if(data.state===6020){// 服务器异常，查询失败
                     alert(data.message);
                 }else if(data.state===6021){
@@ -149,54 +113,17 @@
 
     }
 
-    function insertUser() {
-        let username = document.querySelector("#InsertUsername");
-        let password = document.querySelector("#InsertPassword");
-
-        $.ajax({
-            url:"user/insert?username="+username.value+"&password="+password.value,
-            type:"POST",
-            success:function (data,status) {
-                //console.log("访问成功!");
-                alert(data.message);
-                location.reload();// 强制刷新
-            },error:function () {
-                   console.log("访问接口失败！")
-            }
-        })
-    }
-
-    function updateUser() {
-        let id = document.querySelector("#UpdateId");
-        let password = document.querySelector("#UpdatePassword");
-
-        $.ajax({
-            url:"user/update?id="+id.value+"&password="+password.value,
-            type: "POST",
-            success:function (data,status) {
-                alert(data.message);
-                if(data.state===6031){
-                    // 修改成功，强制刷新
-                    location.reload();
-                }
-            },error:function () {
-              console.log("访问接口失败!")
-            }
-        })
-
-    }
-
     function searchUser() {
         let username = document.querySelector("#SearchUsername");
 
         $.ajax({
-            url:"user/search?username="+username.value,
+            url:"usermanage/search?username="+username.value,
             type: "POST",
             success:function (data,status) {
                 alert(data.message);
                 if(data.state===6042){// 这是除了查询无结果之外的情况，就是查到信息了
-                    console.log("进入到构造页面的函数中!")
-                    createSearchMessages(data);
+                     console.log("进入到构造页面的函数中!")
+                    createSearchMessages(data.data);
                 }
 
             },error:function () {
@@ -212,8 +139,7 @@
 
             //console.log(data.data);
 
-            for (let user of data.data){
-
+            for (let user of data){
 
                 let tr = document.createElement("tr");
 
@@ -226,16 +152,28 @@
                 let tdPassword = document.createElement("td");
                 tdPassword.innerHTML = user.password;
 
+                let tdeamil = document.createElement("td");
+                tdeamil.innerHTML=user.email;
+
+                let tdB = document.createElement("td");
+                let b = document.createElement("a");
+                b.innerHTML="修改";
+                b.href="userUpdate.html?id="+user.id;
+                tdB.appendChild(b);
+
                 let  tdA = document.createElement("td");
                 let  a = document.createElement("a");
                 a.innerHTML="删除";
-                a.href="user/delete?id="+user.id;// 点击发送ajax请求
+                a.href="usermanage/delete?id="+user.id;// 点击发送ajax请求
                 tdA.appendChild(a);
 
                 tr.appendChild(tdId);
                 tr.appendChild(tdName);
                 tr.appendChild(tdPassword);
+                tr.appendChild(tdeamil);
+                tr.appendChild(tdB);
                 tr.appendChild(tdA);
+
 
                 userTable.appendChild(tr);
             }
@@ -265,16 +203,28 @@
             let tdPassword = document.createElement("td");
             tdPassword.innerHTML = user.password;
 
+            let tdeamil = document.createElement("td");
+            tdeamil.innerHTML=user.email;
+
+            let tdB = document.createElement("td");
+            let b = document.createElement("a");
+            b.innerHTML="修改";
+            b.href="userUpdate.html?id="+user.id;
+            tdB.appendChild(b);
+
             let  tdA = document.createElement("td");
             let  a = document.createElement("a");
             a.innerHTML="删除";
-            a.href="user/delete?id="+user.id;// 点击发送ajax请求
+            a.href="usermanage/delete?id="+user.id;// 点击发送ajax请求
             tdA.appendChild(a);
 
             tr.appendChild(tdId);
             tr.appendChild(tdName);
             tr.appendChild(tdPassword);
+            tr.appendChild(tdeamil);
+            tr.appendChild(tdB);
             tr.appendChild(tdA);
+
 
             userTable.appendChild(tr);
         }

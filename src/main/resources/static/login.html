@@ -23,8 +23,8 @@
 </div>
 
 <!-- 登录页面的页面容器, 为了和其他页面样式区分开, 使用不同的类名 -->
-<div class="login-container">
-    <div class="login-dialog">
+<div class="login-container" >
+    <div class="login-dialog" style="height: 380px">
 
             <!-- 标题 -->
             <h3>登录</h3>
@@ -40,19 +40,23 @@
 
             </div>
 
-            <div class="phone">
-                <br>
-                <a href="phoneLogin.html" target="_blank" class="a1">手机号验证码登陆</a>
-                <br>
-                <a href="register.html" target="_blank" class="a1">注册账号</a>
-            </div>
+        <!-- 提交按钮 -->
+        <div class="row submit-row">
+            <!-- <button id="submit">提 交</button> -->
+            <input id="submit" type="submit" onclick=log() value="登陆">
+        </div>
+
+        <br>
+
+                <a href="phoneLogin.html" target="_blank" class="a1" style="color:blue;text-decoration: none">&nbsp&nbsp&nbsp&nbsp手机号验证码登陆&nbsp&nbsp&nbsp&nbsp</a>
+
+                <a href="register.html" target="_blank" class="a1" style="color:blue;text-decoration: none">&nbsp&nbsp&nbsp&nbsp注册账号&nbsp&nbsp&nbsp&nbsp</a>
+
+                <a href="missPassword.html" target="_blank" class="a1" style="color:blue;text-decoration: none">&nbsp&nbsp&nbsp&nbsp忘记密码&nbsp&nbsp&nbsp&nbsp</a>
 
 
-            <!-- 提交按钮 -->
-            <div class="row submit-row">
-                <!-- <button id="submit">提 交</button> -->
-                <input id="submit" type="submit" onclick=log() value="登陆">
-            </div>
+
+
 
     </div>
 </div>

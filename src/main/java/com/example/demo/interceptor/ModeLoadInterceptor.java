@@ -14,18 +14,18 @@ import javax.servlet.http.HttpSession;
 public class ModeLoadInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        HttpSession session = request.getSession(false);
-        if(session==null){
-            response.sendRedirect("login.html");
-            return false;
-        }
-
-        User user = (User)session.getAttribute("user");
-        if(user==null || user.getIsAdmin()==0){
-            response.sendRedirect("index.html");
-            return false;
-        }
-
+//        HttpSession session = request.getSession(false);
+//        if(session==null){
+//            response.sendRedirect("login.html");
+//            return false;
+//        }
+//
+//        User user = (User)session.getAttribute("user");
+//        if(user==null || user.getIsAdmin()==0){
+//            response.sendRedirect("index.html");
+//            return false;
+//        }
+//
         return true;
     }
 }

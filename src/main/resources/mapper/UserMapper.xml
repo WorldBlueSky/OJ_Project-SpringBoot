@@ -7,11 +7,13 @@
 
 
     <insert id="insert" parameterType="com.example.demo.pojo.User">
-        insert into user(id, username, password,isAdmin,salt) values (0,#{username},#{password},#{isAdmin},#{salt})
+        insert into user(id, username, password,isAdmin,salt,email) values (0,#{username},#{password},#{isAdmin},#{salt},#{email})
     </insert>
 
-    <update id="update">
-        update user set password=#{password} where id=#{id}
+
+
+    <update id="updateUser">
+        update user set username=#{username},email=#{email} where id=#{id}
     </update>
 
 
@@ -20,7 +22,7 @@
     </delete>
 
     <select id="selectAll" resultType="com.example.demo.pojo.User">
-        select id,username,password,isAdmin from user
+        select * from user
     </select>
 
     <select id="selectById" resultType="com.example.demo.pojo.User" parameterType="int">

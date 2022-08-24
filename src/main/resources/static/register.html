@@ -23,8 +23,8 @@
 </div>
 
 <!-- 登录页面的页面容器, 为了和其他页面样式区分开, 使用不同的类名 -->
-<div class="login-container">
-    <div class="login-dialog">
+<div class="login-container" >
+    <div class="login-dialog" style="height: 500px">
             <!-- 标题 -->
             <h3>注 册</h3>
 
@@ -38,7 +38,6 @@
             <div class="row">
                 <span>密码</span>
                 <input type="password" id="password" name="password">
-
             </div>
 
             <div class="row">
@@ -46,8 +45,20 @@
                 <input type="password" id="required" name="password">
             </div>
 
+            <div class="row">
+                <span>邮箱(选填)</span>
+                <input type="text" id="email" name="email">
+            </div>
 
-            <!-- 提交按钮 -->
+        <div class="row">
+            <span>邮箱验证码</span>
+            <input type="text" id="emailcode" name="emailcode" style="font-size: 15px">
+        </div>
+
+        <div class="row submit-row">
+            <button id="sendCode"  onclick=sendEmail() >发送邮箱验证码</button>
+        </div>
+
             <div class="row submit-row">
                 <input id="submit" type="submit" onclick=register() value="注册">
             </div>
@@ -60,16 +71,90 @@
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script>
 
-    function register() { // 用户名、密码、确认密码 进行注册信息
-        //1、获取到注册的控件信息
-        let username = document.querySelector("#username");
-        let password =document.querySelector("#password")
-        let required = document.querySelector("#required");
+    //1、获取到注册的控件信息
+    let username = document.querySelector("#username");
+    let password =document.querySelector("#password")
+    let required = document.querySelector("#required");
+    let email = document.querySelector("#email");
+    let emailcode = document.querySelector("#emailcode");
 
-        // 2、发送ajax请求，完成注册用户
+
+    // 发送邮件信息的ajax请求
+    function sendEmail() {
+         $.ajax({
+             url:"state/emailSend?To="+email.value,
+             type: "get",
+             success:function (data,status) {
+                      f();// 按钮禁用120s
+                      alert(data.message);
+             },error:function () {
+                      alert("发送邮件失败!");
+             }
+         })
+
+        function f() {
+            //将按钮禁用
+            let btn = document.querySelector("#sendCode");
+            btn.disabled = true;
+            btn.style.cursor = "not-allowed"; //鼠标显示禁用图标
+
+            //按钮显示60秒倒计时
+            let second = 120;
+            let counter = setInterval(function () {
+                second--;
+                if (second > 0) {
+                    btn.innerText = second + "秒后重新获取";
+                }
+            }, 1000);
+
+            //60秒时间间隔到了之后清除倒计时，按钮恢复点击功能
+            setTimeout(function () {
+                //清除倒计时定时器
+                clearInterval(counter);
+                //按钮恢复
+                btn.innerHTML = "获取验证码";
+                btn.disabled = false;
+                btn.style.cursor = "";
+            }, 30000);
+        }
+    }
+
+
+    function register() { // 用户名、密码、确认密码 进行注册信息
+
+        // 前端来判断是否为空
+        if(username.value==="" || password.value==="" || required.value===""){
+            // 用户名、密码、确认密码不能为空
+            alert("【注册】 用户名或密码不能为空，请重新输入!");
+            return;
+        }
+
+        if(password.value!==required.value){
+            alert("【注册】 两次输入的密码不一致，请重新输入!")
+            return;
+        }
+
+        // 如果邮箱不填的话，那么验证码也可以不填
+        // 但是如果邮箱不为空，那么验证码一定也需要填写，否则提示
+        if(email.value!=="" && emailcode.value==="" ){
+            alert("【注册】 您填写了邮箱地址，注册时请填写验证码!");
+            return;
+        }
+
+
+        // 2、关于参数合法性的问题已经判断过了，就发送ajax请求，在后端直接根据参数完成业务，完成注册用户
+        let body={
+            username:username.value,
+            password:password.value,
+            email:email.value,
+            emailCode:emailcode.value
+        }
+
         $.ajax({
-            url: "oj/reg"+"?username="+username.value+"&password="+password.value+"&required="+required.value,
-            method:'GET',
+            url: "state/reg",
+            method:'POST',
+            data:JSON.stringify(body),
+            contentType:"application/json;charset=utf8",
             success:function (data,status) {
                 alert(data.message);
                 if(data.state===1003){// 注册成功，跳转到登陆界面

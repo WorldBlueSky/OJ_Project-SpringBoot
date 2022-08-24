@@ -18,4 +18,5 @@ public class User implements Serializable {
     private String password;
     private int isAdmin; // 0是普通用户 1是管理员
     private String salt;
+    private String email; // 邮箱可设可不设，如果设置了邮箱，那么可以根据邮箱找回密码
 }

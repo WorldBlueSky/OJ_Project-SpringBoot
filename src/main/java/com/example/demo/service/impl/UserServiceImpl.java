@@ -10,9 +10,14 @@ import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.UUID;
+
+/**
+ * 当前这个类 用于实现 用户登陆、注册等具体业务
+ */
 
 @Service
 public class UserServiceImpl implements UserService {

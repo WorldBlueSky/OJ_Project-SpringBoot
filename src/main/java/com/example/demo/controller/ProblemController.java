@@ -23,6 +23,14 @@ public class ProblemController extends BaseController {
     @Autowired
     public ObjectMapper objectMapper;
 
+
+    /**
+     * 获取 数据库中 题目列表、题目详情的接口
+     * @param id
+     * @return
+     * @throws ProblemNotFountException
+     * @throws JsonProcessingException
+     */
     @RequestMapping(value = "/problems",produces = "application/json;charset=utf-8")
      public String getProblems(@RequestParam(value = "id",required = false) String id) throws ProblemNotFountException, JsonProcessingException {
 
