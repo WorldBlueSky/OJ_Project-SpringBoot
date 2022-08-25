@@ -26,8 +26,9 @@ public interface UserMapper {
     // 用户名模糊查询
     List<User> selectByLikeName(String likeName);
 
-    int updatePassword(@Param("id") int id, @Param("password") String password);
+    User selectByEmail(String email);
 
     int updateUser(@Param("id") int id,@Param("username") String username,@Param("email") String email);
 
+    int updatePassword(@Param("username") String username, @Param("finalPassword") String finalPassword);
 }

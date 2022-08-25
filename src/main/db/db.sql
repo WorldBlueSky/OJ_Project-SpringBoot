@@ -21,5 +21,5 @@ create table user(
      password  varchar(4096) comment '用户密码',
      isAdmin int default 0 comment '是否是管理员用户',
      salt varchar(1024) comment '盐值',
-     email varchar(50) comment '邮箱用于找回个人密码'
+     email varchar(50) unique comment '邮箱用于找回个人密码'
 );

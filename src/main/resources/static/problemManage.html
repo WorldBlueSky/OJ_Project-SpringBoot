@@ -11,7 +11,7 @@
 <body>
 
 <nav class="navbar navbar-expand-md navbar-dark fixed-top sticky-navigation">
-    <a class="navbar-brand font-weight-bold" href="problemManage.html">用户信息管理模块</a>
+    <a class="navbar-brand font-weight-bold" href="problemManage.html">题目信息管理模块</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#topMenu" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -146,7 +146,7 @@
             let aDelete = document.createElement("td");
             let a2 = document.createElement("a");
             a2.innerHTML="删除";
-            a2.href = "manage/delete?id="+problem.id;
+            a2.href = "problemmanage/delete?id="+problem.id;
             aDelete.appendChild(a2);
             tr.appendChild(aDelete);
 
@@ -161,7 +161,7 @@
         let title = document.querySelector("#SearchTitle");
 
         $.ajax({
-            url:"manage/select?title="+title.value,
+            url:"problemmanage/select?title="+title.value,
             type: "POST",
             success:function (data,status) {
                 alert(data.message);

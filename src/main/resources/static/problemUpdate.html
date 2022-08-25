@@ -182,7 +182,7 @@
 
     // 在页面加载的时候，尝试从服务器获取题目信息，通过 ajax 的方式来进行获取，然后将信息直接放到文本框中
     $.ajax({
-        url:"manage/selectById"+location.search,
+        url:"problemmanage/selectById"+location.search,
         type:"post",
         success:function (data) {
             //console.log(data)
@@ -207,7 +207,7 @@
         }
 
         $.ajax({
-            url:"manage/update"+location.search,
+            url:"problemmanage/update"+location.search,
             type: "POST",
             data:JSON.stringify(body),
             contentType:"application/json;charset=utf8",

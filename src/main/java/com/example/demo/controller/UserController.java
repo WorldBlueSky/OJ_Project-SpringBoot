@@ -1,13 +1,13 @@
 package com.example.demo.controller;
 
-import com.example.demo.exception.InsertException;
-import com.example.demo.exception.PasswordNotMatchException;
-import com.example.demo.exception.UsernameDuplicatedException;
-import com.example.demo.exception.UsernameNotFoundException;
+import com.example.demo.exception.*;
+import com.example.demo.mapper.UserMapper;
 import com.example.demo.pojo.User;
 import com.example.demo.service.SendSmsService;
 import com.example.demo.service.UserService;
 import com.example.demo.pojo.JsonResult;
+import com.example.demo.service.impl.UserServiceImpl;
+import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -33,6 +33,9 @@ import java.util.concurrent.TimeUnit;
 public class UserController extends BaseController{
     @Autowired
     public UserService userService;
+
+    @Autowired
+    public UserMapper userMapper;
 
     @Autowired
     public SendSmsService sendSmsService;
@@ -383,6 +386,78 @@ public class UserController extends BaseController{
          return result;
      }
 
+     static class RequireEmail{
+        public String email;
+        public String code;
+     }
+
+     @RequestMapping("/emailRequire")
+     public JsonResult<Void> requireEmail(@RequestBody RequireEmail requireEmail){
+        // 不用判断参数合法性
+         JsonResult<Void> result =new JsonResult<>();
+
+         String email = requireEmail.email;
+         String code = requireEmail.code;
+
+         //查询redis中是否存在email
+         String emailCode = (String)redisTemplate.opsForValue().get(email);
+
+         if(emailCode==null){
+             // 验证码已经过期了
+             result.setState(5006);
+             result.setMessage("邮箱输入错误 或者 验证码已过期!");
+             return  result;
+         }
+
+         // 查询到了的话，那么将查询到的验证码与 输入的验证码进行比对
+
+         if(!code.equals(emailCode)){
+            //匹配失败
+             result.setState(5007);
+             result.setMessage("输入的验证码错误，请重新输入!");
+             return result;
+         }
+
+         // 匹配成功，跳转到重置密码的界面
+         result.setState(5008);
+         result.setMessage("验证成功!");
+         return result;
+
+     }
+
+
+    static class UpdateUser{
+       public String username;
+       public String password;
+    }
+
+     @RequestMapping("/updatePassword")
+     public JsonResult<Void> updatePassword(@RequestBody UpdateUser updateUser) throws UpdateException {
+        // 输入密码的逻辑
+         String username = updateUser.username;
+         String password = updateUser.password;
+
+         //先获取原用户的盐值，将密码进行md5加密，
+         User user = userMapper.selectByName(username);
+         String salt =  user.getSalt();
+
+         // 这是用户修改过的代码经过加密之后的密码，替换即可
+         String finalPassword = UserServiceImpl.getMd5Password(password,salt);
+
+         //最后将原密码修改为md5加密之后的密码
+         int rows = userMapper.updatePassword(username,finalPassword);
+
+         if(rows!=1){
+             throw new UpdateException("服务器异常，插入失败!");
+         }
+
+         JsonResult<Void> result = new JsonResult<>();
+         result.setMessage("修改成功!");
+         return result;
+
+
+     }
+
     /**
      * 生成6为随机验证码的方法
      * @return
@@ -407,5 +482,7 @@ public class UserController extends BaseController{
         boolean flag=str.matches(tegex);
         return flag;
     }
+
+
 
 }

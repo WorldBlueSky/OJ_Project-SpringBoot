@@ -144,4 +144,24 @@ public class UserManageController extends BaseController{
         return result;
     }
 
+
+    // 6080-6089
+    @RequestMapping(value = "/emailUser",produces = "application/json;charset=utf8")
+    public JsonResult<User> retUser(String email) throws JsonProcessingException {
+        JsonResult<User> result = new JsonResult<>();
+
+       User user = userMapper.selectByEmail(email);
+       if(user==null){
+             // 输入的邮箱虽然存在，但是与用户不绑定,就是说这个邮箱不是存在于数据表中的信息
+           result.setState(6080);
+           result.setMessage("您的邮箱未注册，响应失败!");
+           return  result;
+       }
+
+       result.setState(6081);
+       result.setMessage("匹配成功，根据该邮箱找到该用户");
+       result.setData(user);
+       return result;
+    }
+
 }

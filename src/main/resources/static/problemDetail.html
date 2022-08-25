@@ -237,7 +237,7 @@
 
             function logout() {
                  $.ajax({
-                     url:"oj/logout",
+                     url:"state/logout",
                      type:"POST",
                      success:function (data,status) {
                         if(data.state===5001){

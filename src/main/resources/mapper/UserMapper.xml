@@ -15,6 +15,9 @@
     <update id="updateUser">
         update user set username=#{username},email=#{email} where id=#{id}
     </update>
+    <update id="updatePassword">
+        update user set password=#{finalPassword} where username=#{username}
+    </update>
 
 
     <delete id="delete" >
@@ -37,6 +40,10 @@
 
     <select id="selectByLikeName" resultType="com.example.demo.pojo.User" parameterType="java.lang.String">
         select * from user where username like #{likeName}
+    </select>
+
+    <select id="selectByEmail" resultType="com.example.demo.pojo.User">
+        select * from user where email=#{email}
     </select>
 
 </mapper>

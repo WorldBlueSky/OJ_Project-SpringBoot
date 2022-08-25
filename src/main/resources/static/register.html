@@ -81,11 +81,13 @@
 
     // 发送邮件信息的ajax请求
     function sendEmail() {
+
+        f();// 按钮禁用120s
+
          $.ajax({
              url:"state/emailSend?To="+email.value,
              type: "get",
              success:function (data,status) {
-                      f();// 按钮禁用120s
                       alert(data.message);
              },error:function () {
                       alert("发送邮件失败!");
@@ -167,7 +169,7 @@
 
     function logout() {
         $.ajax({
-            url:"oj/logout",
+            url:"state/logout",
             type:"POST",
             success:function (data,status) {
                 alert(data.message);

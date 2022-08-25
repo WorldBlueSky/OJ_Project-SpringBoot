@@ -59,7 +59,7 @@
         let phoneNumber = document.querySelector("#phoneNumber");
         let code = document.querySelector("#code");
         $.ajax({
-            url:"oj/phoneLogin"+"?phone="+phoneNumber.value+"&code="+code.value,
+            url:"state/phoneLogin"+"?phone="+phoneNumber.value+"&code="+code.value,
             type:"POST",
             success:function (data,status) {
                 alert(data.message);
@@ -72,19 +72,20 @@
 
     function getVarCode() { // 发送验证码，同时验证码按钮禁用
 
+        f();
+
         //1、获取输入框中的手机号
         let phoneNumber = document.querySelector("#phoneNumber")
 
         $.ajax({
-            url:'oj/phoneSend'+"?phone="+phoneNumber.value,
+            url:'state/phoneSend'+"?phone="+phoneNumber.value,
             type:'POST',
             success(data,status){
-                if(data.state===4003){//验证码发送成功，请及时填写，2分钟有效
-                    f();// 只有在真正发送成功的时候，按钮才会禁用
-                }
                 alert(data.message);
             }
         })
+
+
 
         function f() {
             //将按钮禁用
@@ -116,7 +117,7 @@
 
     function logout() {
         $.ajax({
-            url:"oj/logout",
+            url:"state/logout",
             type:"POST",
             success:function (data,status) {
                 if(data.state===5001){

@@ -108,7 +108,7 @@
             function getUserManageMdel() {
                 // 满足一定的条件要把a标签给加上
                $.ajax({
-                   url:"user/isload",
+                   url:"usermanage/isload",
                    type:"POST",
                    success:function (data,status) {
                       if(data.state===6050){// 当前用户是管理员用户
@@ -184,7 +184,7 @@
 
             function logout() {
                 $.ajax({
-                    url:"oj/logout",
+                    url:"state/logout",
                     type:"POST",
                     success:function (data,status) {
                         alert(data.message);

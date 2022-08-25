@@ -16,12 +16,21 @@ public class InterceptorConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         // 将登录拦截注册到 配置中
         registry.addInterceptor(new LoginInterceptor())
-                .addPathPatterns("/index.html","/problemDetail.html");// 必须加上/
+                .addPathPatterns("/index.html",
+                        "/problemDetail.html",
+                        "/problemInsert.html",
+                        "/problemManage.html",
+                        "/problemUpdate.html",
+                        "/userManage.html",
+                        "/userUpdate.html");// 必须加上/
 
         // 将用户身份权限拦截 注册到 配置中
         registry.addInterceptor(new ModeLoadInterceptor())
-                .addPathPatterns("/userManage.html","/problemManage.html",
-                        "/problemInsert.html","/problemUpdate.html");// 对后台管理的模块的网页设置身份验证拦截
+                .addPathPatterns("/userManage.html",
+                        "/userUpdate.html",
+                        "/problemManage.html",
+                        "/problemInsert.html",
+                        "/problemUpdate.html");// 对后台管理的模块的网页设置身份验证拦截
 
     }
 
