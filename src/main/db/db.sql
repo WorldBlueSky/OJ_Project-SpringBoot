@@ -23,3 +23,4 @@ create table user(
      salt varchar(1024) comment '盐值',
      email varchar(50) unique comment '邮箱用于找回个人密码'
 );
+
